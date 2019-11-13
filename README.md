@@ -2,7 +2,12 @@
 
 endpoints _'/pitching/player'_ and _'/batting/player'_ are what the frontend currently fetches right now in order to get pitching and batting stats of a player queried for respectively.
 
-## technologies currently in use
-* Postgres as SQL/relational database
+## Technologies Used
+* Postgres as SQL/relational database (loaded latest baseball data (comma-delimited version) from http://www.seanlahman.com/baseball-archive/statistics/ into a postgresdb)
 * Node and Express for the backend server
 * knex.js module in order to communicate between Postgres and Express server
+
+## Improvements to be Made
+* environment variables as password to db is in the code
+* deployment
+* possibly use aws relational db
