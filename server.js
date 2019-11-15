@@ -25,13 +25,16 @@ function isEmpty(obj) {
 }
 */
 
+/*
 function getFinalActiveData(activeData) {
   const activeFinalData = activeData.map(activeDataEntry => {
     return {'id': activeDataEntry.playerID, 'firstname': activeDataEntry.nameFirst, 'lastname': activeDataEntry.nameLast, 'team': activeDataEntry.teamID};
   });
   return activeFinalData;
 }
+*/
 
+/*
 app.get('/activepitchers', (req, res) => {
   const pitcherIDs = new Set();
   const pitcher2k18ActiveInfo = []; 
@@ -42,11 +45,11 @@ app.get('/activepitchers', (req, res) => {
     })
     .then(activePitchersData => {
       const activePitchersFinalData = getFinalActiveData(activePitchersData);
-      /*
+      //
       const activePitchersFinalData = activePitchersData.map(activePitcher => {
         return {'id': activePitcher.playerID, 'firstname': activePitcher.nameFirst, 'lastname': activePitcher.nameLast, 'team': activePitcher.teamID};
       });
-      */
+      //
       res.json(activePitchersFinalData);
     });
 });
@@ -112,13 +115,15 @@ app.get('/isplayeractive', (req, res) => {
       })
     })
 });
+*/
 
 
 app.get('/pitching/player', (req, res) => {
   db.select('*').from('Pitching')
   .join('Master', function() {
     this.on('Pitching.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
-  }).then(pitcherData => {
+  })
+  .then(pitcherData => {
     // WHIP = round((H + BB)) * 3/IPouts, 2)
       pitcherData.forEach(pitcherDataEntry => {
         pitcherDataEntry.WHIP = String(((pitcherDataEntry.H + pitcherDataEntry.BB) * 3 / pitcherDataEntry.IPouts).toFixed(2));
@@ -130,15 +135,16 @@ app.get('/pitching/player', (req, res) => {
       res.send(String(((pitcherData[pitcherData.length - 1].H + pitcherData[pitcherData.length - 1].BB) * 3 / pitcherData[pitcherData.length - 1].IPouts).toFixed(2)));
       */
      res.send(pitcherData);
-    }
-  )
+    })
+
 });
 
 app.get('/batting/player', (req, res) => {
   db.select('*').from('Batting')
   .join('Master', function() {
     this.on('Batting.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
-  }).then(batterData => {
+  })
+  .then(batterData => {
       res.send(batterData);
     }
   )
