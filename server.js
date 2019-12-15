@@ -145,6 +145,9 @@ app.get('/batting/player', (req, res) => {
     this.on('Batting.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
   })
   .then(batterData => {
+      batterData.forEach(batterDataEntry => {
+        batterDataEntry.OBP = String(((batterDataEntry.H + batterDataEntry.BB + batterDataEntry.HBP) / (batterDataEntry.AB + batterDataEntry.BB + batterDataEntry.HBP + batterDataEntry.SF)).toFixed(3));
+      });
       res.send(batterData);
     }
   )
