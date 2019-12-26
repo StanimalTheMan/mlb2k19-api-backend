@@ -8,6 +8,5 @@ endpoints _'/pitching/player'_ and _'/batting/player'_ are what the frontend cur
 * knex.js module in order to communicate between Postgres and Express server
 
 ## Improvements to be Made
-* environment variables as password to db is in the code
 * deployment
 * possibly use aws relational db
