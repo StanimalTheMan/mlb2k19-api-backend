@@ -158,9 +158,13 @@ app.get('/batting/player', (req, res) => {
 });
 
 app.get('/hof/player', (req, res) => {
-  db.select('*').from('Batting')
+  db.select('*').from('HallOfFame')
   .join('Master', function() {
-    this.on('Batting.playerID', '=', 'Master.playerID').onIn('Master.nameLast')
+    this.on('HallOfFame.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
+  })
+  .then(hofData => {
+    console.log(hofData);
+    res.send(hofData);
   })
 })
 app.listen(3000);
