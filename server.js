@@ -128,6 +128,7 @@ app.get('/pitching/player', (req, res) => {
   .then(pitcherData => {
     // WHIP = round((H + BB)) * 3/IPouts, 2)
       pitcherData.forEach(pitcherDataEntry => {
+        pitcherDataEntry.ERA = String((pitcherDataEntry.ERA.toFixed(2)));
         pitcherDataEntry.WHIP = String(((pitcherDataEntry.H + pitcherDataEntry.BB) * 3 / pitcherDataEntry.IPouts).toFixed(2));
       });
       /*
@@ -148,6 +149,7 @@ app.get('/batting/player', (req, res) => {
   })
   .then(batterData => {
       batterData.forEach(batterDataEntry => {
+        batterDataEntry.AVG = String((batterDataEntry.H / batterDataEntry.AB).toFixed(3));
         batterDataEntry.OBP = String(((batterDataEntry.H + batterDataEntry.BB + batterDataEntry.HBP) / (batterDataEntry.AB + batterDataEntry.BB + batterDataEntry.HBP + batterDataEntry.SF)).toFixed(3));
       });
       res.send(batterData);
@@ -155,4 +157,10 @@ app.get('/batting/player', (req, res) => {
   )
 });
 
+app.get('/hof/player', (req, res) => {
+  db.select('*').from('Batting')
+  .join('Master', function() {
+    this.on('Batting.playerID', '=', 'Master.playerID').onIn('Master.nameLast')
+  })
+})
 app.listen(3000);
