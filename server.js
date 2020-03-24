@@ -1,18 +1,17 @@
-const express = require('express');
-require('dotenv').config()
-const knex = require('knex');
-const cors = require('cors');
+const express = require("express");
+require("dotenv").config();
+const knex = require("knex");
+const cors = require("cors");
 
 const db = knex({
-  client: 'pg',
+  client: "pg",
   connection: {
-    host : process.env.DB_HOST,
-    user : process.env.DB_USER,
-    password : process.env.DB_PASS,
-    database : process.env.DB_NAME
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
   }
 });
-
 
 const app = express();
 
@@ -119,17 +118,24 @@ app.get('/isplayeractive', (req, res) => {
 });
 */
 
-
-app.get('/pitching/player', (req, res) => {
-  db.select('*').from('Pitching')
-  .join('Master', function() {
-    this.on('Pitching.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
-  })
-  .then(pitcherData => {
-    // WHIP = round((H + BB)) * 3/IPouts, 2)
+app.get("/pitching/player", (req, res) => {
+  db.select("*")
+    .from("Pitching")
+    .join("Master", function() {
+      this.on("Pitching.playerID", "=", "Master.playerID")
+        .onIn("Master.nameLast", [req.query.lastname])
+        .onIn("Master.nameFirst", [req.query.firstname]);
+    })
+    .then(pitcherData => {
+      // WHIP = round((H + BB)) * 3/IPouts, 2)
       pitcherData.forEach(pitcherDataEntry => {
-        pitcherDataEntry.ERA = String((pitcherDataEntry.ERA.toFixed(2)));
-        pitcherDataEntry.WHIP = String(((pitcherDataEntry.H + pitcherDataEntry.BB) * 3 / pitcherDataEntry.IPouts).toFixed(2));
+        pitcherDataEntry.ERA = String(pitcherDataEntry.ERA.toFixed(2));
+        pitcherDataEntry.WHIP = String(
+          (
+            ((pitcherDataEntry.H + pitcherDataEntry.BB) * 3) /
+            pitcherDataEntry.IPouts
+          ).toFixed(2)
+        );
       });
       /*
       console.log(pitcherData.length);
@@ -137,34 +143,51 @@ app.get('/pitching/player', (req, res) => {
       
       res.send(String(((pitcherData[pitcherData.length - 1].H + pitcherData[pitcherData.length - 1].BB) * 3 / pitcherData[pitcherData.length - 1].IPouts).toFixed(2)));
       */
-     res.send(pitcherData);
-    })
-
+      res.send(pitcherData);
+    });
 });
 
-app.get('/batting/player', (req, res) => {
-  db.select('*').from('Batting')
-  .join('Master', function() {
-    this.on('Batting.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
-  })
-  .then(batterData => {
+app.get("/batting/player", (req, res) => {
+  db.select("*")
+    .from("Batting")
+    .join("Master", function() {
+      this.on("Batting.playerID", "=", "Master.playerID")
+        .onIn("Master.nameLast", [req.query.lastname])
+        .onIn("Master.nameFirst", [req.query.firstname]);
+    })
+    .then(batterData => {
       batterData.forEach(batterDataEntry => {
-        batterDataEntry.AVG = String((batterDataEntry.H / batterDataEntry.AB).toFixed(3));
-        batterDataEntry.OBP = String(((batterDataEntry.H + batterDataEntry.BB + batterDataEntry.HBP) / (batterDataEntry.AB + batterDataEntry.BB + batterDataEntry.HBP + batterDataEntry.SF)).toFixed(3));
+        batterDataEntry.AVG = String(
+          (batterDataEntry.H / batterDataEntry.AB).toFixed(3)
+        );
+        batterDataEntry.OBP = String(
+          (
+            (batterDataEntry.H + batterDataEntry.BB + batterDataEntry.HBP) /
+            (batterDataEntry.AB +
+              batterDataEntry.BB +
+              batterDataEntry.HBP +
+              batterDataEntry.SF)
+          ).toFixed(3)
+        );
       });
       res.send(batterData);
-    }
-  )
+    });
 });
 
-app.get('/hof/player', (req, res) => {
-  db.select('*').from('HallOfFame')
-  .join('Master', function() {
-    this.on('HallOfFame.playerID', '=', 'Master.playerID').onIn('Master.nameLast', [req.query.lastname]).onIn('Master.nameFirst', [req.query.firstname])
-  })
-  .then(hofData => {
-    console.log(hofData);
-    res.send(hofData);
-  })
-})
-app.listen(3000);
+app.get("/hof/player", (req, res) => {
+  db.select("*")
+    .from("HallOfFame")
+    .join("Master", function() {
+      this.on("HallOfFame.playerID", "=", "Master.playerID")
+        .onIn("Master.nameLast", [req.query.lastname])
+        .onIn("Master.nameFirst", [req.query.firstname]);
+    })
+    .then(hofData => {
+      console.log(hofData);
+      res.send(hofData);
+    });
+});
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`app is running on port ${process.env.PORT}`);
+});
