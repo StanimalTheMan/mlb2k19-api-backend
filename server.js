@@ -22,9 +22,11 @@ const app = express();
 
 app.use(cors());
 
+/*
 app.get("/", (req, res) => {
   res.send("it is working!");
 });
+*/
 /*
 function isEmpty(obj) {
   for (prop in obj) {
