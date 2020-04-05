@@ -7,7 +7,7 @@ const db = knex({
   client: "pg",
   connection: {
     connectionString: process.env.DATABASE_URL,
-    ssl: true
+    ssl: true,
     /*
     UNCOMMENT FOR DEVELOPMENT RUN
     host: process.env.DB_HOST,
@@ -15,7 +15,7 @@ const db = knex({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME
     */
-  }
+  },
 });
 
 const app = express();
@@ -131,14 +131,14 @@ app.get('/isplayeractive', (req, res) => {
 app.get("/pitching/player", (req, res) => {
   db.select("*")
     .from("Pitching")
-    .join("Master", function() {
+    .join("Master", function () {
       this.on("Pitching.playerID", "=", "Master.playerID")
         .onIn("Master.nameLast", [req.query.lastname])
         .onIn("Master.nameFirst", [req.query.firstname]);
     })
-    .then(pitcherData => {
+    .then((pitcherData) => {
       // WHIP = round((H + BB)) * 3/IPouts, 2)
-      pitcherData.forEach(pitcherDataEntry => {
+      pitcherData.forEach((pitcherDataEntry) => {
         pitcherDataEntry.ERA = String(pitcherDataEntry.ERA.toFixed(2));
         pitcherDataEntry.WHIP = String(
           (
@@ -160,13 +160,13 @@ app.get("/pitching/player", (req, res) => {
 app.get("/batting/player", (req, res) => {
   db.select("*")
     .from("Batting")
-    .join("Master", function() {
+    .join("Master", function () {
       this.on("Batting.playerID", "=", "Master.playerID")
         .onIn("Master.nameLast", [req.query.lastname])
         .onIn("Master.nameFirst", [req.query.firstname]);
     })
-    .then(batterData => {
-      batterData.forEach(batterDataEntry => {
+    .then((batterData) => {
+      batterData.forEach((batterDataEntry) => {
         batterDataEntry.AVG = String(
           (batterDataEntry.H / batterDataEntry.AB).toFixed(3)
         );
@@ -187,12 +187,12 @@ app.get("/batting/player", (req, res) => {
 app.get("/hof/player", (req, res) => {
   db.select("*")
     .from("HallOfFame")
-    .join("Master", function() {
+    .join("Master", function () {
       this.on("HallOfFame.playerID", "=", "Master.playerID")
         .onIn("Master.nameLast", [req.query.lastname])
         .onIn("Master.nameFirst", [req.query.firstname]);
     })
-    .then(hofData => {
+    .then((hofData) => {
       console.log(hofData);
       res.send(hofData);
     });
