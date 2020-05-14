@@ -5,11 +5,12 @@ const cors = require("cors");
 
 const db = knex({
   client: "pg",
-  connection: {
+  connection: {    
     connectionString: process.env.DATABASE_URL,
-    ssl: true,
+    ssl: true
+    
     /*
-    UNCOMMENT FOR DEVELOPMENT RUN
+    //UNCOMMENT FOR DEVELOPMENT RUN
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
   res.send("it is working!");
 });
 */
+
 /*
 function isEmpty(obj) {
   for (prop in obj) {
@@ -184,6 +186,7 @@ app.get("/batting/player", (req, res) => {
     });
 });
 
+/*
 app.get("/hof/player", (req, res) => {
   db.select("*")
     .from("HallOfFame")
@@ -197,7 +200,10 @@ app.get("/hof/player", (req, res) => {
       res.send(hofData);
     });
 });
+*/
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`app is running on port ${process.env.PORT}`);
 });
+
+module.exports = app;
